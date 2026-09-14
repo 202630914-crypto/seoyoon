@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘 뭐 먹지? - 저녁 메뉴 추천</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f7f9fc;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .header-tag {
+            display: inline-block;
+            background-color: #fff3e0;
+            color: #ff9800;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+
+        /* 결과 표시 영역 */
+        .display-card {
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: 20px;
+            padding: 36px 20px;
+            margin-bottom: 32px;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .emoji-box {
+            font-size: 80px;
+            line-height: 1;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .food-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 6px;
+        }
+
+        .food-category {
+            font-size: 13px;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        /* 애니메이션 효과 */
+        .bounce {
+            transform: scale(1.2);
+        }
+
+        /* 버튼 스타일 */
+        .btn-recommend {
+            width: 100%;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-recommend:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(255, 107, 107, 0.45);
+        }
+
+        .btn-recommend:active {
+            transform: translateY(1px);
+        }
+
+        .footer-note {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #a0aec0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <span class="header-tag">TODAY'S DINNER</span>
+        <h1>오늘 저녁 뭐 먹지?</h1>
+        <p class="subtitle">결정 장애 해소를 위한 랜덤 메뉴 추천기!</p>
+
+        <div class="display-card">
+            <div class="emoji-box" id="emoji">❓</div>
+            <div class="food-name" id="foodName">버튼을 눌러주세요!</div>
+            <div class="food-category" id="foodCategory">오늘의 맛있는 저녁 메뉴는?</div>
+        </div>
+
+        <button class="btn-recommend" onclick="recommendMenu()">저녁 메뉴 추천받기 🎲</button>
+
+        <p class="footer-note">결과가 마음에 들지 않으면 다시 눌러보세요!</p>
+    </div>
+
+    <script>
+        // 메뉴 목록 (이모지, 메뉴명, 카테고리)
+        const menuList = [
+            { name: "삼겹살 & 목살", emoji: "🥓", category: "한식 / 구이" },
+            { name: "치킨", emoji: "🍗", category: "야식 / 치맥" },
+            { name: "피자", emoji: "🍕", category: "양식" },
+            { name: "햄버거", emoji: "🍔", category: "패스트푸드" },
+            { name: "초밥 & 스시", emoji: "🍣", category: "일식" },
+            { name: "라면", emoji: "🍜", category: "분식" },
+            { name: "짜장면 & 짬뽕", emoji: "🥢", category: "중식" },
+            { name: "떡볶이", emoji: "🍢", category: "분식" },
+            { name: "파스타", emoji: "🍝", category: "양식" },
+            { name: "카레", emoji: "🍛", category: "일식 / 아시안" },
+            { name: "스테이크", emoji: "🥩", category: "양식" },
+            { name: "타코", emoji: "🌮", category: "멕시칸" },
+            { name: "돈까스", emoji: "🍱", category: "일식" },
+            { name: "쌀국수", emoji: "🍜", category: "베트남" },
+            { name: "샐러드", emoji: "🥗", category: "건강식" },
+            { name: "족발 & 보쌈", emoji: "🍖", category: "한식" },
+            { name: "국밥 (순대/돼지)", emoji: "🍲", category: "한식" },
+            { name: "마라탕", emoji: "🥘", category: "중식" }
+        ];
+
+        let isSpinning = false;
+
+        function recommendMenu() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const emojiEl = document.getElementById('emoji');
+            const nameEl = document.getElementById('foodName');
+            const categoryEl = document.getElementById('foodCategory');
+
+            let counter = 0;
+            const maxCycles = 12;
+
+            // 슬롯머신처럼 빠르게 바뀌는 효과
+            const interval = setInterval(() => {
+                const tempIndex = Math.floor(Math.random() * menuList.length);
+                emojiEl.textContent = menuList[tempIndex].emoji;
+                nameEl.textContent = menuList[tempIndex].name;
+                categoryEl.textContent = menuList[tempIndex].category;
+                
+                counter++;
+                if (counter >= maxCycles) {
+                    clearInterval(interval);
+                    
+                    // 최종 메뉴 결정
+                    const finalIndex = Math.floor(Math.random() * menuList.length);
+                    const selected = menuList[finalIndex];
+
+                    emojiEl.textContent = selected.emoji;
+                    nameEl.textContent = selected.name;
+                    categoryEl.textContent = selected.category;
+
+                    // 바운스 애니메이션 효과
+                    emojiEl.classList.add('bounce');
+                    setTimeout(() => emojiEl.classList.remove('bounce'), 300);
+
+                    isSpinning = false;
+                }
+            }, 80);
+        }
+    </script>
+</body>
+</html>
