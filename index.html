@@ -3,18 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘 뭐 먹지? - 저녁 메뉴 추천</title>
+    <title>골라골라 빨대 - 나만의 먹는 빨대 추천 & 레시피</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #FF5E7E;
+            --primary-hover: #E04362;
+            --secondary: #00C9A7;
+            --bg-color: #FFF9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #2D3142;
+            --text-sub: #4C5270;
+            --border-color: #FFE3E8;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
 
         body {
-            background-color: #f7f9fc;
-            color: #333;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#FFD2DC 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,190 +37,489 @@
         }
 
         .container {
-            background: #ffffff;
             width: 100%;
-            max-width: 420px;
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-            text-align: center;
+            max-width: 580px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(255, 94, 126, 0.12);
+            padding: 36px 28px;
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
 
-        .header-tag {
+        header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .badge {
             display: inline-block;
-            background-color: #fff3e0;
-            color: #ff9800;
-            font-size: 14px;
+            background: #FFE3E8;
+            color: var(--primary);
+            font-size: 0.85rem;
             font-weight: 700;
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         h1 {
-            font-size: 26px;
+            font-size: 2.1rem;
             font-weight: 800;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        p.subtitle {
-            font-size: 15px;
-            color: #666;
-            margin-bottom: 32px;
-        }
-
-        /* 결과 표시 영역 */
-        .display-card {
-            background: #f8fafc;
-            border: 2px dashed #e2e8f0;
-            border-radius: 20px;
-            padding: 36px 20px;
-            margin-bottom: 32px;
-            min-height: 220px;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .emoji-box {
-            font-size: 80px;
-            line-height: 1;
-            margin-bottom: 16px;
-            transition: transform 0.3s ease;
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            margin-top: 6px;
         }
 
-        .food-name {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 6px;
+        /* Step 스타일 */
+        .step {
+            display: none;
+            animation: slideUp 0.4s ease-out forwards;
         }
 
-        .food-category {
-            font-size: 13px;
-            color: #a0aec0;
-            font-weight: 500;
+        .step.active {
+            display: block;
         }
 
-        /* 애니메이션 효과 */
-        .bounce {
-            transform: scale(1.2);
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 버튼 스타일 */
-        .btn-recommend {
-            width: 100%;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
-            color: white;
-            border: none;
-            padding: 18px;
-            font-size: 18px;
-            font-weight: 700;
+        /* 입력 폼 */
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 16px 20px;
+            border: 2px solid #EAECEF;
             border-radius: 16px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.35);
+            font-size: 1rem;
+            outline: none;
             transition: all 0.2s ease;
         }
 
-        .btn-recommend:hover {
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 94, 126, 0.15);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 94, 126, 0.3);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(255, 107, 107, 0.45);
         }
 
-        .btn-recommend:active {
-            transform: translateY(1px);
+        .btn:active {
+            transform: translateY(0);
         }
 
-        .footer-note {
-            margin-top: 24px;
-            font-size: 12px;
-            color: #a0aec0;
+        .btn:disabled {
+            background-color: #E2E8F0;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 카드 선택 그리드 */
+        .instruction {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .sub-instruction {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 18px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-card {
+            border: 2px solid #F1F3F5;
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #FAFAFC;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .option-card:hover {
+            border-color: #FFD2DC;
+            background: #FFF9FA;
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background-color: #FFF0F3;
+            box-shadow: 0 4px 12px rgba(255, 94, 126, 0.12);
+        }
+
+        .option-card .emoji {
+            font-size: 1.5rem;
+        }
+
+        .option-card .label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        /* 결과 창 */
+        .result-header {
+            background: linear-gradient(135deg, #FF5E7E, #FF99AC);
+            color: white;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(255, 94, 126, 0.25);
+        }
+
+        .straw-tag {
+            background: rgba(255, 255, 255, 0.25);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .straw-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .straw-desc {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        .recipe-box {
+            background: #F8F9FA;
+            border-radius: 18px;
+            padding: 20px;
+            border: 1px solid #EAECEF;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .recipe-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .ing-item {
+            background: white;
+            border: 1px solid #E2E8F0;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .steps-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .steps-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 32px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
+        .steps-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 22px;
+            height: 22px;
+            background-color: var(--secondary);
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pairings {
+            background: #FFF9FA;
+            border: 1px dashed var(--primary);
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+
+        .pairings strong {
+            color: var(--primary);
+        }
+
+        .btn-full {
+            width: 100%;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <span class="header-tag">TODAY'S DINNER</span>
-        <h1>오늘 저녁 뭐 먹지?</h1>
-        <p class="subtitle">결정 장애 해소를 위한 랜덤 메뉴 추천기!</p>
+<div class="container">
+    <header>
+        <span class="badge">카페 취향 저격 서비스</span>
+        <h1>🥤 골라골라 빨대</h1>
+        <p class="subtitle">내 입맛에 딱 맞춘 '맛있는 먹는 빨대' 레시피</p>
+    </header>
 
-        <div class="display-card">
-            <div class="emoji-box" id="emoji">❓</div>
-            <div class="food-name" id="foodName">버튼을 눌러주세요!</div>
-            <div class="food-category" id="foodCategory">오늘의 맛있는 저녁 메뉴는?</div>
+    <!-- STEP 1: 음식 입력 -->
+    <div id="step-1" class="step active">
+        <p class="instruction">평소 좋아하는 음식을 알려주세요!</p>
+        <p class="sub-instruction">디저트, 음료, 과일 등 좋아하는 음식을 입력해 보세요.</p>
+        <div class="input-box">
+            <input type="text" id="food-input" placeholder="예: 초코케이크, 딸기라떼, 녹차아이스크림" onkeypress="if(event.key==='Enter') generateFlavors()">
+            <button class="btn" onclick="generateFlavors()">다음</button>
         </div>
-
-        <button class="btn-recommend" onclick="recommendMenu()">저녁 메뉴 추천받기 🎲</button>
-
-        <p class="footer-note">결과가 마음에 들지 않으면 다시 눌러보세요!</p>
     </div>
 
-    <script>
-        // 메뉴 목록 (이모지, 메뉴명, 카테고리)
-        const menuList = [
-            { name: "삼겹살 & 목살", emoji: "🥓", category: "한식 / 구이" },
-            { name: "치킨", emoji: "🍗", category: "야식 / 치맥" },
-            { name: "피자", emoji: "🍕", category: "양식" },
-            { name: "햄버거", emoji: "🍔", category: "패스트푸드" },
-            { name: "초밥 & 스시", emoji: "🍣", category: "일식" },
-            { name: "라면", emoji: "🍜", category: "분식" },
-            { name: "짜장면 & 짬뽕", emoji: "🥢", category: "중식" },
-            { name: "떡볶이", emoji: "🍢", category: "분식" },
-            { name: "파스타", emoji: "🍝", category: "양식" },
-            { name: "카레", emoji: "🍛", category: "일식 / 아시안" },
-            { name: "스테이크", emoji: "🥩", category: "양식" },
-            { name: "타코", emoji: "🌮", category: "멕시칸" },
-            { name: "돈까스", emoji: "🍱", category: "일식" },
-            { name: "쌀국수", emoji: "🍜", category: "베트남" },
-            { name: "샐러드", emoji: "🥗", category: "건강식" },
-            { name: "족발 & 보쌈", emoji: "🍖", category: "한식" },
-            { name: "국밥 (순대/돼지)", emoji: "🍲", category: "한식" },
-            { name: "마라탕", emoji: "🥘", category: "중식" }
-        ];
+    <!-- STEP 2: 맛 요소 투표 -->
+    <div id="step-2" class="step">
+        <p class="instruction"><span id="user-food-display" style="color:var(--primary)"></span> 입맛을 위한 추천 맛!</p>
+        <p class="sub-instruction">빨대로 만들고 싶은 맛 요소들을 선택해 주세요. (1~3개 선택)</p>
+        
+        <div class="options-grid" id="options-container"></div>
 
-        let isSpinning = false;
+        <button id="blend-btn" class="btn btn-full" onclick="buildRecipe()" disabled>선택한 맛으로 빨대 레시피 만들기</button>
+    </div>
 
-        function recommendMenu() {
-            if (isSpinning) return;
-            isSpinning = true;
+    <!-- STEP 3: 완성이 된 빨대 & 레시피 제공 -->
+    <div id="step-3" class="step">
+        <div class="result-header">
+            <span class="straw-tag">당신만을 위한 맞춤 빨대</span>
+            <div class="straw-title" id="straw-title">오리지널 맛 빨대</div>
+            <div class="straw-desc" id="straw-desc">풍미 깊은 조화를 이루는 커스텀 빨대입니다.</div>
+        </div>
 
-            const emojiEl = document.getElementById('emoji');
-            const nameEl = document.getElementById('foodName');
-            const categoryEl = document.getElementById('foodCategory');
+        <div class="recipe-box">
+            <div class="recipe-title">👩‍🍳 먹는 빨대 DIY 제작 레시피</div>
+            <div class="ingredients-list" id="ing-list"></div>
+            <ol class="steps-list" id="steps-list"></ol>
+        </div>
 
-            let counter = 0;
-            const maxCycles = 12;
+        <div class="pairings" id="pairing-info">
+            💡 <strong>추천 페어링:</strong> 이 빨대는 시원한 우유나 깔끔한 아메리카노와 함께 마실 때 맛이 더욱 살아납니다!
+        </div>
 
-            // 슬롯머신처럼 빠르게 바뀌는 효과
-            const interval = setInterval(() => {
-                const tempIndex = Math.floor(Math.random() * menuList.length);
-                emojiEl.textContent = menuList[tempIndex].emoji;
-                nameEl.textContent = menuList[tempIndex].name;
-                categoryEl.textContent = menuList[tempIndex].category;
-                
-                counter++;
-                if (counter >= maxCycles) {
-                    clearInterval(interval);
-                    
-                    // 최종 메뉴 결정
-                    const finalIndex = Math.floor(Math.random() * menuList.length);
-                    const selected = menuList[finalIndex];
+        <button class="btn btn-full" onclick="resetApp()" style="background-color: var(--text-main);">다시 만들기</button>
+    </div>
+</div>
 
-                    emojiEl.textContent = selected.emoji;
-                    nameEl.textContent = selected.name;
-                    categoryEl.textContent = selected.category;
+<script>
+    // 음식 키워드별 맛 요소 데이터베이스
+    const flavorDatabase = {
+        '초코': [
+            { name: '리치 다크 초콜릿', emoji: '🍫', ing: '다크 초콜릿 50g' },
+            { name: '달콤한 바닐라빈', emoji: '🍦', ing: '바닐라 파우더 10g' },
+            { name: '고소한 헤이즐넛', emoji: '🌰', ing: '헤이즐넛 시럽 15ml' },
+            { name: '상큼한 민트', emoji: '🌿', ing: '민트 추출물 3방울' },
+            { name: '부드러운 밀크폼', emoji: '🥛', ing: '전지분유 15g' }
+        ],
+        '딸기': [
+            { name: '상큼한 생딸기 과즙', emoji: '🍓', ing: '동결건조 딸기가루 20g' },
+            { name: '달콤한 연유', emoji: '🥛', ing: '연유 15g' },
+            { name: '진한 요거트', emoji: '🍦', ing: '요거트 파우더 15g' },
+            { name: '샤인머스캣 향', emoji: '🍇', ing: '청포도 농축액 10ml' },
+            { name: '화이트 초콜릿', emoji: '🤍', ing: '화이트 초콜릿 40g' }
+        ],
+        '커피': [
+            { name: '에스프레소 풍미', emoji: '☕', ing: '인스턴트 커피 파우더 10g' },
+            { name: '달콤한 솔티 카라멜', emoji: '🍯', ing: '카라멜 시럽 15ml & 소금 한꼬집' },
+            { name: '시나몬 파우더', emoji: '🍂', ing: '시나몬 가루 3g' },
+            { name: '고소한 로스팅 아몬드', emoji: '🥜', ing: '아몬드 분말 15g' },
+            { name: '딥 바닐라', emoji: '🍦', ing: '바닐라 익스트랙 5ml' }
+        ],
+        '녹차': [
+            { name: '쌉싸름한 칠성 말차', emoji: '🍵', ing: '말차 파우더 15g' },
+            { name: '달콤한 단팥', emoji: '🫘', ing: '팥 파우더 15g' },
+            { name: '고소한 인절미', emoji: '🍡', ing: '볶은 콩가루 15g' },
+            { name: '화이트 뷰티 초코', emoji: '🍫', ing: '화이트 초콜릿 40g' },
+            { name: '꿀 시럽', emoji: '🍯', ing: '사양벌꿀 10ml' }
+        ],
+        '기본': [
+            { name: '상큼한 레몬', emoji: '🍋', ing: '레몬 파우더 15g' },
+            { name: '달콤한 망고', emoji: '🥭', ing: '망고 농축 가루 15g' },
+            { name: '복숭아 향', emoji: '🍑', ing: '복숭아 베이스 15g' },
+            { name: '부드러운 우유', emoji: '🥛', ing: '전지분유 20g' },
+            { name: '톡 쏘는 라임', emoji: '🟢', ing: '라임 즙 10ml' }
+        ]
+    };
 
-                    // 바운스 애니메이션 효과
-                    emojiEl.classList.add('bounce');
-                    setTimeout(() => emojiEl.classList.remove('bounce'), 300);
+    let selectedItems = [];
 
-                    isSpinning = false;
-                }
-            }, 80);
+    function generateFlavors() {
+        const input = document.getElementById('food-input').value.trim();
+        if (!input) {
+            alert('좋아하는 음식을 입력해 주세요!');
+            return;
         }
-    </script>
+
+        let category = '기본';
+        if (input.includes('초코') || input.includes('카카오') || input.includes('초콜릿') || input.includes('브라우니')) category = '초코';
+        else if (input.includes('딸기') || input.includes('베리') || input.includes('체리')) category = '딸기';
+        else if (input.includes('커피') || input.includes('라떼') || input.includes('아메리카노') || input.includes('카페')) category = '커피';
+        else if (input.includes('녹차') || input.includes('말차') || input.includes('그린티')) category = '녹차';
+
+        const flavorList = flavorDatabase[category];
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        selectedItems = [];
+
+        flavorList.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'option-card';
+            card.onclick = () => toggleSelect(card, item);
+            card.innerHTML = `
+                <span class="emoji">${item.emoji}</span>
+                <span class="label">${item.name}</span>
+            `;
+            container.appendChild(card);
+        });
+
+        document.getElementById('user-food-display').innerText = `'${input}'`;
+        switchStep(2);
+    }
+
+    function toggleSelect(card, item) {
+        const index = selectedItems.findIndex(i => i.name === item.name);
+
+        if (index > -1) {
+            selectedItems.splice(index, 1);
+            card.classList.remove('selected');
+        } else {
+            if (selectedItems.length >= 3) {
+                alert('최대 3개까지만 선택할 수 있습니다.');
+                return;
+            }
+            selectedItems.push(item);
+            card.classList.add('selected');
+        }
+
+        document.getElementById('blend-btn').disabled = selectedItems.length === 0;
+    }
+
+    function buildRecipe() {
+        if (selectedItems.length === 0) return;
+
+        // 빨대 이름 생성
+        const mainNames = selectedItems.map(item => item.name.split(' ').pop());
+        const strawTitle = mainNames.join(' ') + ' 맛 먹는 빨대';
+
+        document.getElementById('straw-title').innerText = strawTitle;
+        document.getElementById('straw-desc').innerText = `${selectedItems.map(i => i.name).join(', ')}의 풍미가 감미롭게 조화된 나만의 젤라틴 먹는 빨대입니다.`;
+
+        // 레시피 재료 구성
+        const ingContainer = document.getElementById('ing-list');
+        ingContainer.innerHTML = '';
+        
+        const baseIngredients = ['식용 젤라틴 가루 15g', '물 60ml', '물엿/옥수수시럽 10g'];
+        const customIngredients = selectedItems.map(item => item.ing);
+        const allIngredients = [...baseIngredients, ...customIngredients];
+
+        allIngredients.forEach(ing => {
+            const span = document.createElement('span');
+            span.className = 'ing-item';
+            span.innerText = '✔ ' + ing;
+            ingContainer.appendChild(span);
+        });
+
+        // 레시피 단계 구성
+        const stepsContainer = document.getElementById('steps-list');
+        stepsContainer.innerHTML = `
+            <li>볼에 물 60ml와 젤라틴 15g을 넣고 5분간 불려줍니다.</li>
+            <li><strong>선택한 맛 재료(${selectedItems.map(i => i.name).join(', ')})</strong>와 물엿을 넣고 잘 섞어줍니다.</li>
+            <li>전자레인지에 15~20초간 살짝 데워 내용물을 투명하게 녹입니다.</li>
+            <li>실리콘 빨대 몰드(또는 스테인리스 빨대 겉면)에 내용물을 매끄럽게 부어줍니다.</li>
+            <li>냉장고에서 40분 이상 서서히 굳힌 후 몰드에서 조심스럽게 분리합니다.</li>
+            <li>완성된 맛있는 빨대를 음료에 꽂아 맛과 향을 즐기며 마십니다!</li>
+        `;
+
+        // 추천 페어링
+        const pairingEl = document.getElementById('pairing-info');
+        pairingEl.innerHTML = `💡 <strong>추천 음료 페어링:</strong> 시원한 우유, 탄산수, 또는 아메리카노와 함께 마시면 빨대가 천천히 녹아내리며 디저트 같은 풍미를 더해줍니다.`;
+
+        switchStep(3);
+    }
+
+    function switchStep(stepNum) {
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        document.getElementById(`step-${stepNum}`).classList.add('active');
+    }
+
+    function resetApp() {
+        document.getElementById('food-input').value = '';
+        selectedItems = [];
+        switchStep(1);
+    }
+</script>
+
 </body>
 </html>
